@@ -1,0 +1,171 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+class User
+{
+    String username;
+    String password;
+    
+
+    public User(String username, String password)
+    {
+        this.username = username;
+        this.password = password;
+    }
+
+    
+}
+
+class Question
+{
+    String question;
+    String[] options;
+    int correctAnswer;
+
+    public Question(String question, String[] options, int correctAnswer)
+    {
+        this.question = question;
+        this.options = options;
+        this.correctAnswer = correctAnswer;
+    }
+}
+
+public class OnlineExamination {
+    private static Map<String, User> users = new HashMap<>();
+    private static User currentUser = null;
+    private static int totalMarks = 0;
+    private static int obtainedMarks = 0;
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        // Code to set up questions for the examination
+        Question mcqQuestion = new Question(
+            "What is the principle of rainbow color?",
+            new String[] {"a. Newton's principle", "b. Hysenberg principle", "c. Faraday's principle", "d. Total internal reflection"},
+            3 // The correct answer is option c (index 3)
+        );
+
+        
+        users.put("admin", new User("admin", "password"));
+
+        boolean exit = false;
+        while (!exit) {
+            System.out.println("1. Login");
+            System.out.println("2. Update Password and Profile");
+            System.out.println("3. Select Answers for MCQs");
+            System.out.println("4. Timing and Auto Submit");
+            System.out.println("5. Close Session and Logout");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (choice) {
+                case 1:
+                    login();
+                    break;
+                case 2:
+                    if (currentUser != null) {
+                        updatePasswordAndProfile();
+                    } else {
+                        System.out.println("Please login first.");
+                    }
+                    break;
+                case 3:
+                    if (currentUser != null) {
+                        selectAnswersForMCQs(mcqQuestion);
+                    } else {
+                        System.out.println("Please login first.");
+                    }
+                    break;
+                case 4:
+                    if (currentUser != null) {
+                        timingAndAutoSubmit();
+                    } else {
+                        System.out.println("Please login first.");
+                    }
+                    break;
+                case 5:
+                    if (currentUser != null) {
+                        closeSessionAndLogout();
+                    } else {
+                        System.out.println("Please login first.");
+                    }
+                    break;
+                case 6:
+                    exit = true;
+                    System.out.println("Exiting... Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private static void login() {
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter your password: ");
+        String password = scanner.nextLine();
+
+        User user = users.get(username);
+        if (user != null && user.password.equals(password)) {
+            currentUser = user;
+            System.out.println("Login successful. Welcome, " + currentUser.username + "!");
+        } else {
+            System.out.println("Invalid username or password. Please try again.");
+        }
+    }
+
+    private static void updatePasswordAndProfile() {
+        // Implement code to update password and other profile data
+    }
+
+    private static void selectAnswersForMCQs(Question mcqQuestion) {
+        System.out.println(mcqQuestion.question);
+        for (String option : mcqQuestion.options) {
+            System.out.println(option);
+        }
+
+        System.out.print("Select your answer (a, b, c, or d): ");
+        char selectedAnswer = scanner.nextLine().charAt(0);
+        int selectedAnswerIndex = -1;
+
+        switch (selectedAnswer) {
+            case 'a':
+                selectedAnswerIndex = 0;
+                break;
+            case 'b':
+                selectedAnswerIndex = 1;
+                break;
+            case 'c':
+                selectedAnswerIndex = 2;
+                break;
+            case 'd':
+                selectedAnswerIndex = 3;
+                break;
+            default:
+                System.out.println("Invalid answer choice.");
+                return;
+        }
+
+        if (selectedAnswerIndex == mcqQuestion.correctAnswer) {
+            System.out.println("Correct answer! You earned a point.");
+            obtainedMarks++;
+        } else {
+            System.out.println("Incorrect answer. The correct answer was: " + mcqQuestion.options[mcqQuestion.correctAnswer]);
+        }
+    }
+
+    private static void timingAndAutoSubmit() {
+        // Implement code for timing and auto submission of the examination
+    }
+
+    private static void closeSessionAndLogout() {
+        // Implement code to calculate and display the result
+        // Reset currentUser and any other required data for logout
+        currentUser = null;
+        System.out.println("Session closed. Logout successful.");
+    }
+}
